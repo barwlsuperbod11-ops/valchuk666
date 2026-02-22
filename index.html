@@ -1,41 +1,156 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Пропуск</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            font-size: 4rem;
-            color: #00ff88;
-            margin-bottom: 30px;
-        }
-        input {
-            font-size: 1.5rem;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-            text-align: center;
-            background-color: #1f1f1f;
-            color: #ffffff;
-            width: 300px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>вальчук666</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: url("val.png") center center / cover no-repeat fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    backdrop-filter: brightness(0.5);
+}
+
+h1 {
+    font-size: 48px;
+    color: #ff0000;
+    text-shadow: 0 0 20px red;
+    margin-bottom: 40px;
+}
+
+.roulette {
+    width: 400px;
+    height: 80px;
+    overflow: hidden;
+    border: 3px solid red;
+    border-radius: 12px;
+    position: relative;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+}
+
+.strip {
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+}
+
+.item {
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    border-right: 1px solid #222;
+}
+
+.center-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: red;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px red;
+}
+
+button {
+    margin-top: 40px;
+    padding: 15px 40px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 20px red;
+}
+</style>
 </head>
 <body>
-    <h1>ПРОХОД ЗА ПЯТКУ</h1>
+
+<h1>вальчук666</h1>
+
+<div class="roulette" id="roulette">
+    <div class="strip" id="strip"></div>
+    <div class="center-line"></div>
+</div>
+
+<button onclick="spin()">Крутить</button>
+
+<script>
+const items = [
+    "смерть",
+    "3 задания",
+    "вальчук одобряет",
+    "вальчук не одобряет",
+    "забвение",
+    "реинкорнация",
+    "поклонение сатане",
+    "проклятие"
+];
+
+const strip = document.getElementById("strip");
+const roulette = document.getElementById("roulette");
+
+const ITEM_WIDTH = 120;
+
+// заполняем ленту
+for (let i = 0; i < 30; i++) {
+    items.forEach(text => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.textContent = text;
+        strip.appendChild(div);
+    });
+}
+
+let spinning = false;
+let currentOffset = 0;
+
+function spin() {
+    if (spinning) return;
+    spinning = true;
+
+    const randomItem = Math.floor(Math.random() * items.length);
+    const cycles = 15;
+
+    const targetIndex = cycles * items.length + randomItem;
+
+    const centerOffset = roulette.offsetWidth / 2 - ITEM_WIDTH / 2;
+    const targetOffset = targetIndex * ITEM_WIDTH - centerOffset;
+
+    const start = performance.now();
+    const duration = 3000;
+    const startOffset = currentOffset;
+
+    function animate(time) {
+        const t = Math.min((time - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+
+        currentOffset = startOffset + (targetOffset - startOffset) * ease;
+        strip.style.transform = `translateX(-${currentOffset}px)`;
+
+        if (t < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            spinning = false;
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+</script>
+
 </body>
 </html>
